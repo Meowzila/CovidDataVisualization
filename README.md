@@ -1,0 +1,2 @@
+# CovidDataVisualization
+Some neat visualizations
