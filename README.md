@@ -43,3 +43,10 @@ sql = f"""
     """
 ```
 ![alt text](https://i.imgur.com/Zb4cQVv.png)
+
+## Normalization per 100,000 people option
+![alt text](https://i.imgur.com/mkmWVBe.png)
+
+
+## Website Layout
+![alt text](https://i.imgur.com/38MEJwl.png)
