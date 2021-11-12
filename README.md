@@ -47,6 +47,5 @@ sql = f"""
 ## Normalization per 100,000 people option
 ![alt text](https://i.imgur.com/mkmWVBe.png)
 
-
-## Website Layout
+## Website Layout and Features
 ![alt text](https://i.imgur.com/38MEJwl.png)
