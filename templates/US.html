@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+{% load static %}
+
+{% block content %}
+
+<link rel="shortcut icon" type="image/png" href="{% static 'favicon.ico' %}"/>
+
+<header>
+  <a href="{% url 'home' %}">Home</a> |
+  <a href="{% url 'US' %}">US</a> |
+  <a href="{% url 'EU' %}">EU</a>
+</header>
+
+<h1>US Covid Data Visualizations</h1>
+<a href='https://console.cloud.google.com/marketplace/product/bigquery-public-datasets/covid19-open-data' target="_blank">Data Source</a>
+<br/>
+<body>
+	<br/>
+	<form method="POST">
+		{% csrf_token %}
+		{{ form|crispy }}
+		<br/>
+		<button type="submit">Submit</button>	
+	</form>
+	<iframe style="margin-top:-400px;margin-left:-400px" src="//plotly.com/~meowzila/203.embed" width="1000" height="800" align="right" ></iframe>
+</body>
+
+{% endblock %}

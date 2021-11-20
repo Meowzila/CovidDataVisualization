@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+{% load static %}
+
+{% block content %}
+
+<link rel="shortcut icon" type="image/png" href="{% static 'favicon.ico' %}"/>
+
+<header>
+  <a href="{% url 'home' %}">Home</a> |
+  <a href="{% url 'US' %}">US</a> |
+  <a href="{% url 'EU' %}">EU</a>
+</header>
+
+<h1>Data Visualizations</h1>
+<br/>
+<body>
+	<h4><a href="{% url 'US' %}">US Data</a></h4>
+	<img class="fit-picture" src="https://i.imgur.com/RSESctL.png" alt="US_Example">
+	<br/>
+	<h4><a href="{% url 'EU' %}">EU Data</a></h4>
+	<img class="fit-picture" src="https://i.imgur.com/ilwmMTG.png" alt="EU_Example">
+</body>
+
+{% endblock %}
+
+
