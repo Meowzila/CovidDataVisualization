@@ -4,12 +4,11 @@
 
 {% block content %}
 
-<link rel="shortcut icon" type="image/png" href="{% static 'favicon.ico' %}"/>
-
 <header>
   <a href="{% url 'home' %}">Home</a> |
   <a href="{% url 'US' %}">US</a> |
-  <a href="{% url 'EU' %}">EU</a>
+  <a href="{% url 'EU' %}">EU</a> |
+  <a href="{% url 'average' %}">Moving Average</a>
 </header>
 
 <h1>EU Covid Data Visualization</h1>
