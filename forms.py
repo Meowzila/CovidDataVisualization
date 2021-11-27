@@ -101,4 +101,35 @@ class SubmissionFormEU(forms.Form):
 		input_formats=['%Y-%m-%d'], 
 		help_text='(OPTIONAL) Default: Latest EU Data ~3 days ago')
 
-	actual_latest = forms.BooleanField(required=False, initial=False, label='Force Latest Data (~1 day ago)')
+
+class MovingAverageForm(forms.Form):
+	level = forms.ChoiceField(choices=[
+	('state', 'By State'), 
+	('country', 'Entire Country')])
+
+	param = forms.ChoiceField(choices=[
+	('new_confirmed', 'New Confirmed Cases'), 
+	('new_deceased', 'New Deaths'), 
+	('new_persons_fully_vaccinated', 'New Fully Vaccinated')])
+
+	state = forms.ChoiceField(choices=[('AK', 'AK'), 
+	('AL', 'AL'), ('AR', 'AR'), ('AZ', 'AZ'), ('CA', 'CA'), ('CO', 'CO'),
+	('CT', 'CT'), ('DC', 'DC'), ('DE', 'DE'), ('FL', 'FL'), ('GA', 'GA'),
+	('HI', 'HI'), ('IA', 'IA'), ('ID', 'ID'), ('IL', 'IL'), ('IN', 'IN'),
+	('KS', 'KS'), ('KY', 'KY'), ('LA', 'LA'), ('MA', 'MA'), ('MD', 'MD'),
+	('ME', 'ME'), ('MI', 'MI'), ('MN', 'MN'), ('MO', 'MO'), ('MS', 'MS'),
+	('MT', 'MT'), ('NC', 'NC'), ('ND', 'ND'), ('NE', 'NE'), ('NH', 'NH'),
+	('NJ', 'NJ'), ('NM', 'NM'), ('NV', 'NV'), ('NY', 'NY'), ('OH', 'OH'),
+	('OK', 'OK'), ('OR', 'OR'), ('PA', 'PA'), ('RI', 'RI'), ('SC', 'SC'), 
+	('SD', 'SD'), ('TN', 'TN'), ('TX', 'TX'), ('UT', 'UT'), ('VA', 'VA'),
+	('VT', 'VT'), ('WA', 'WA'), ('WI', 'WI'), ('WV', 'WV'), ('WY', 'WY')], required=False)
+
+	start_date = forms.DateField(label='Start Date (YYYY-MM-DD)', 
+	required=False, 
+	input_formats=['%Y-%m-%d'], 
+	help_text='(OPTIONAL) Default: 2020-01-01')
+
+	end_date = forms.DateField(label='End Date (YYYY-MM-DD)', 
+	required=False, 
+	input_formats=['%Y-%m-%d'], 
+	help_text='(OPTIONAL) Default: Today')

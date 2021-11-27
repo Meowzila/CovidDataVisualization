@@ -5,4 +5,5 @@ urlpatterns = [
     path('', views.HomePage, name="home"),
     path('US/', views.US_Data, name="US"),
     path('EU/', views.EU_Data, name="EU"),
+    path('average/', views.Moving_Average, name="average"),
 ]

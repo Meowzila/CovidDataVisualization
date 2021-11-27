@@ -3,6 +3,8 @@ import plotly.express as px
 import plotly.io as pio
 import geopandas as gpd
 import pandas as pd
+from datetime import datetime
+from datetime import timedelta
 
 
 us_pop_dict = {
@@ -177,3 +179,61 @@ def GenerateFigureUS(fig_type, fig_query, fig_param, fig_state=None, normalized=
                             title=f'{fig_param.title().replace("_", " ")} in US on {str(fig_query["date"][0])}'+normal)
         fig.update_geos(fitbounds="locations", visible=False)
         py.plot(fig, filename='us_map_1', auto_open=False, include_plotlyjs='cdn')
+
+
+
+def GenerateFigureMovingAverage(df, fig_type, param, state, start_date, end_date):
+    if start_date is None:
+        start_date = '2020-01-01'
+    if end_date is None:
+        end_date = (datetime.now()-timedelta(days=1)).strftime('%Y-%m-%d')
+    
+    if fig_type == 'state':
+        param_list = list(df[param])
+        date_list = list(df['date'])
+
+        moving_average = {i//7:(sum(param_list[i-7:i])//7) for i, val in enumerate(param_list) if i % 7 == 0 and i != 0}
+        week = {i//7:date for i, date in enumerate(date_list) if i % 7 == 0 and i != 0}
+
+        averaged = {i//7:'7-Day Average' for i, date in enumerate(date_list) if i % 7 == 0}
+        average_df = pd.DataFrame([week, moving_average, averaged]).reset_index(drop=True).transpose()
+        average_df.columns = ['date', param, 'Data']
+        not_averaged = ['Daily' for date in date_list]
+        notaverage_df = pd.DataFrame([date_list, param_list, not_averaged]).reset_index(drop=True).transpose()
+        notaverage_df.columns = ['date', param, 'Data']
+
+        combined_df = pd.concat([average_df, notaverage_df])
+
+        fig = px.line(combined_df, x="date", y=param, 
+                      color='Data', 
+                      title=f'{param.title().replace("_", " ")} in {state} from {start_date} to {end_date}',
+                      width=1000,
+                      height=500,)
+        py.plot(fig, filename='moving_average', auto_open=False, include_plotlyjs='cdn')
+        
+    elif fig_type == 'country':
+        param_list = list(df[param])
+        date_list = list(df['date'])
+
+        moving_average_param = {i//357:(sum(param_list[i-357:i])//357) for i, val in enumerate(param_list) if i % 357 == 0 and i != 0}
+        avg_week = {i//357:date for i, date in enumerate(date_list) if i % 357 == 0 and i != 0}
+
+        non_avg_param = {i//51:(sum(param_list[i-51:i])//51) for i, val in enumerate(param_list) if i % 51 == 0 and i != 0}
+        week = {i//51:date for i, date in enumerate(date_list) if i % 51 == 0 and i != 0}
+
+        averaged = {i//357:'7-Day Average' for i, date in enumerate(date_list) if i % 357 == 0}
+        average_df = pd.DataFrame([avg_week, moving_average_param, averaged]).reset_index(drop=True).transpose().dropna()
+        average_df.columns = ['date', param, 'Data']
+
+        not_averaged = {i//51:'Daily' for i, date in enumerate(date_list) if i % 51 == 0}
+        notaverage_df = pd.DataFrame([week, non_avg_param, not_averaged]).reset_index(drop=True).transpose().dropna()
+        notaverage_df.columns = ['date', param, 'Data']
+
+        combined_df = pd.concat([average_df, notaverage_df])
+
+        fig = px.line(combined_df, x="date", y=param, 
+                      color='Data', 
+                      title=f'{param.title().replace("_", " ")} in US from {start_date} to {end_date}',
+                      width=1000,
+                      height=500,)
+        py.plot(fig, filename='moving_average', auto_open=False, include_plotlyjs='cdn')

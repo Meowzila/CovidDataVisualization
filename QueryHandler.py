@@ -15,18 +15,13 @@ def CountyNum(state_of_interest):
     return num_counties
 
 
-def BuildQueryEU(query_type, query_param, query_country, query_region=None, query_date=None, actual_latest=False):
+def BuildQueryEU(query_type, query_param, query_country, query_region=None, query_date=None):
     # Latest = ~3 days from current date due to slow data filling
-    if actual_latest is False:
-        lag = timedelta(days=3)
-        now = datetime.now()-lag
-        latest = now.strftime('%Y-%m-%d')
-    else:
-        lag = timedelta(days=1)
-        now = datetime.now()-lag
-        latest = now.strftime('%Y-%m-%d')
+    lag = timedelta(days=3)
+    now = datetime.now()-lag
+    latest = now.strftime('%Y-%m-%d')
 
-    if query_date is None and actual_latest is False:       
+    if query_date is None:       
         if query_type == 'country':
             sql = f"""
                 SELECT distinct location_key, iso_3166_1_alpha_3, {query_param}, date FROM `bigquery-public-data.covid19_open_data_eu.covid19_open_data`
@@ -141,4 +136,24 @@ def BuildQueryUS(query_type, query_param, query_state=None, query_region=None, q
     return client.query(sql).to_dataframe().sort_values(by='location_key', ascending=True).reset_index(drop=True)
 
 
-
+def MovingAverageQuery(query_type, query_param, query_state=None, start_date=None, end_date=None):
+    if start_date is None:
+        start_date = '2020-01-01'
+    if end_date is None:
+        end_date = (datetime.now()-timedelta(days=1)).strftime('%Y-%m-%d')
+        
+    if query_type == 'state':
+        sql = f"""
+            SELECT DISTINCT location_key, {query_param}, date FROM `bigquery-public-data.covid19_open_data.covid19_open_data`
+            WHERE location_key = 'US_{query_state}' AND {query_param} IS NOT NULL and date between '{start_date}' and '{end_date}'
+            ORDER BY date ASC
+            """
+        return client.query(sql).to_dataframe()
+    elif query_type == 'country':
+        sql = f"""
+            SELECT DISTINCT location_key, {query_param}, date FROM `bigquery-public-data.covid19_open_data.covid19_open_data`
+            WHERE location_key LIKE 'US___' AND {query_param} IS NOT NULL and location_key NOT IN ('US_GU', 'US_PR', 'US_VI', 'US_MP', 'US_AS') 
+            and date between '{start_date}' and '{end_date}'
+            ORDER BY date ASC
+            """
+        return client.query(sql).to_dataframe()
